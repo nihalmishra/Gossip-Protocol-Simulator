@@ -1,9 +1,10 @@
 defmodule App do
   use GenServer
 
-  def main do
+  def main(args) do
+    [numNodes, topology, algorithm] = args
     Registry.start_link(keys: :unique, name: :my_reg)
-    num_peer = 1000
+    num_peer = String.to_integer(numNodes)
     peer_list = Enum.to_list(1..num_peer)
     create_gossip_peer(peer_list)
     start_time = System.monotonic_time(:millisecond)
