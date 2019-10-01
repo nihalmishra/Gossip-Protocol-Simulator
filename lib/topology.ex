@@ -29,7 +29,7 @@ defmodule Topology do
   defp get_line_neighbors(curr_index, total_nodes) do
     cond do
       curr_index == 0 -> [1]
-      curr_index == total_nodes - 1 ->[total_nodes - 2]
+      curr_index == total_nodes - 1 -> [total_nodes - 2]
       true -> [(total_nodes - 1), (total_nodes + 1)]
     end
   end
