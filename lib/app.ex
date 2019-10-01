@@ -7,6 +7,8 @@ defmodule App do
     peer_list = Enum.to_list(1..num_peer)
     create_gossip_peer(peer_list)
     start_time = System.monotonic_time(:millisecond)
+    time_table = :ets.new(:time_table, [:set, :public, :named_table])
+    :ets.insert(time_table, {"count",0})
     start_gossip(peer_list, start_time)
   end
 

@@ -17,7 +17,8 @@ defmodule Topology do
 
         "randhoneycomb" -> get_randhoneycomb_neighbors(curr_index, total_nodes)
       end
-      IO.inspect(neighbors)
+      # IO.puts "#{curr_index}->"
+      # IO.inspect neighbors
       neighbors
   end
 
