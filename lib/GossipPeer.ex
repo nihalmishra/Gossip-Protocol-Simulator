@@ -19,19 +19,20 @@ defmodule GossipPeer do
     IO.inspect curr_index
     IO.inspect total_nodes
     neighbours = Topology.getNeighbor("line", curr_index, total_nodes)
-    IO.inspect neighbours
+    GenServer.cast(find_random_neighbour(neighbours, curr_index),{:gossip,start_time})
+    # IO.inspect neighbours
     # IO.puts "@ #{state.name} , msg_cnt=#{msg_seen}"
-    # if msg_seen == 1 do
-    #   # IO.puts "#{state.name} ------------------reached"
-    #   # spawn_link(__MODULE__,:gossipContinue,[state.neighbours,state.name,start_time])
-    #   # IO.puts "after spawn"
-    #   count = :ets.update_counter(:time_table, "count", {2,1})
-    #   if count == state.total_nodes do
-    #     endTime = System.monotonic_time(:millisecond) - start_time
-    #     IO.puts "Convergence achieved in = " <> Integer.to_string(endTime) <>" Milliseconds"
-    #     System.halt(1)
-    #   end
-    # end
+    if msg_seen == 1 do
+      # IO.puts "#{state.name} ------------------reached"
+      # spawn_link(__MODULE__,:gossipContinue,[state.neighbours,state.name,start_time])
+      # IO.puts "after spawn"
+      count = :ets.update_counter(:time_table, "count", {2,1})
+      if count == state.total_nodes do
+        endTime = System.monotonic_time(:millisecond) - start_time
+        IO.puts "Convergence achieved in = " <> Integer.to_string(endTime) <>" Milliseconds"
+        System.halt(1)
+      end
+    end
 
     # if msg_seen == 1 do
     #   # IO.puts "starting process #{state.name}"
@@ -56,13 +57,13 @@ defmodule GossipPeer do
 
   # gossip continue
   def gossipContinue(neighbours,name,start_time) do
-    {next_one,current_neighbours} = randomNeighbour(neighbours,name)
+    {next_one,current_neighbours} = find_random_neighbour(neighbours,name)
     # IO.puts "#{name} ----> #{next_one}"
     GenServer.cast(next_one,{:gossip,start_time})
     gossipContinue(current_neighbours,name,start_time)
   end
 
-  def randomNeighbour(neighbours,name) do
+  def find_random_neighbour(neighbours,name) do
     if Enum.empty?(neighbours) do
       Process.exit(self(),:normal)
     end

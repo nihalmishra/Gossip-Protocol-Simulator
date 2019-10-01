@@ -25,12 +25,11 @@ defmodule Topology do
     Enum.to_list 1..total_nodes
   end
 
-
   defp get_line_neighbors(curr_index, total_nodes) do
     cond do
-      curr_index == 0 -> [1]
-      curr_index == total_nodes - 1 -> [total_nodes - 2]
-      true -> [(total_nodes - 1), (total_nodes + 1)]
+      curr_index == 1 -> [2]
+      curr_index == total_nodes ->[total_nodes - 1]
+      true -> [(curr_index - 1), (curr_index + 1)]
     end
   end
 
