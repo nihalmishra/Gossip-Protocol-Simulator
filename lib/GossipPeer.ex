@@ -1,13 +1,7 @@
 defmodule GossipPeer do
-  # use DynamicSupervisor
   use GenServer
 
-  # def start_link(node_list) do
-  #   GenServer.start_link(__MODULE__, node_list, name: __MODULE__)
-  # end
-
   def init(state) do
-    IO.inspect state
     {:ok, state}
   end
 

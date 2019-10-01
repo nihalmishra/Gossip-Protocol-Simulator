@@ -15,17 +15,15 @@ defmodule App do
   end
 
   def create_gossip_peer(peer_list) do
-    # msg_seen = 0
     Enum.map peer_list, fn peer ->
       {:ok, pid} = GenServer.start_link(GossipPeer, %{msg_seen: 0, name: peer, total_nodes: length(peer_list)}, name: via_tuple(Integer.to_string(peer)))
-      IO.inspect(pid)
     end
   end
 
   def start_gossip(peer_list,start_time) do
-    IO.puts "starting gossip"
-    GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,0))),{:gossip,start_time})
-    # Helper.span(peer_list, start_time)
+    random_node = Enum.random(peer_list)
+    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:gossip,start_time})
+    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,0))),{:gossip,start_time})
   end
 
   defp via_tuple(peer_name) do
