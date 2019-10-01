@@ -3,7 +3,7 @@ defmodule App do
 
   def main do
     Registry.start_link(keys: :unique, name: :my_reg)
-    num_peer = 10
+    num_peer = 1000
     peer_list = Enum.to_list(1..num_peer)
     create_gossip_peer(peer_list)
     start_time = System.monotonic_time(:millisecond)
@@ -24,8 +24,8 @@ defmodule App do
 
   def start_gossip(peer_list,start_time) do
     random_node = Enum.random(peer_list)
-    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:gossip,start_time})
-    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,0))),{:gossip,start_time})
+    # GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,start_time})
+    GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,start_time})
   end
 
   defp via_tuple(peer_name) do

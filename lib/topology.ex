@@ -58,8 +58,8 @@ defmodule Topology do
   # end
 
   defp get_3Dtorus_neighbors(i, total_nodes) do
-    cubeLength = total_nodes |> :math.pow(1 / 3)
-    total_nodes = :math.pow(cubeLength, 3)
+    cubeLength = total_nodes |> :math.pow(1 / 3) |> :math.ceil() |> trunc()
+    total_nodes = cubeLength |> :math.pow(3) |> trunc()
 
     side1 = if i - 1 <= 0, do: total_nodes + i - 1, else: i - 1
     side2 = if i + 1 > total_nodes, do: i + 1 - total_nodes, else: i + 1
@@ -79,14 +79,15 @@ defmodule Topology do
   end
 
   defp get_honeycomb_neighbors(curr_index, total_nodes) do
-      width = :math.sqrt(total_nodes) |> :math.ceil() |> :math.pow(2) |> trunc()
+      width = :math.sqrt(total_nodes) |> :math.ceil() |> trunc()
+      total_nodes = width |> :math.pow(2) |> trunc()
       row = div(curr_index, width)
       neighbors1 =
         cond do
           rem(row, 2) == 0 && rem(curr_index,2)==0 -> curr_index + 1
           rem(row, 2) == 0 && rem(curr_index,2)==1 -> curr_index - 1
           rem(row, 2) == 1 && rem(curr_index,2)==0 -> curr_index - 1
-          rem(row, 2) == 1 && rem(curr_index,2)==0 -> curr_index + 1
+          rem(row, 2) == 1 && rem(curr_index,2)==1 -> curr_index + 1
         end
       neighbors2 = curr_index + width
       neighbors3 = curr_index - width
