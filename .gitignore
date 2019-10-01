@@ -23,4 +23,4 @@ erl_crash.dump
 app-*.tar
 
 #Ignore elixir build dir
-.elixir_ls
+/.elixir_ls
