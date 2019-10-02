@@ -38,22 +38,22 @@ Gossip and Push-Sum algorithms are simulated succesfully for all the above topol
 
 ### Gossip Protocol
 
-| Topology    | Network Size     |
-| ----------- | -----------      | 
-| Full Network | X|
-| Line | Y|
-| Random 2D Grid | Z|
-| 3D Torus Grid | Z|
-| Honeycomb | Z|
-| Random Honeycomb | Z|
+| Topology    | Network Size     | Convergence time (ms)|
+| ----------- | -----------      | ---------------------|
+| Full Network | 10000| 123859|
+| Line | 2500|193063|
+| Random 2D Grid | 7000|11828|
+| 3D Torus Grid | 25000|50453|
+| Honeycomb | 25000|208609|
+| Random Honeycomb | 150000|17658|
 
 ### Push Sum Algorithm
 
-| Topology    | Network Size     |
-| ----------- | -----------      | 
-| Full Network | X|
-| Line | Y|
-| Random 2D Grid | Z|
-| 3D Torus Grid | Z|
-| Honeycomb | Z|
-| Random Honeycomb | Z|
+| Topology    | Network Size     |Convergence time (ms)|
+| ----------- | -----------      |---------------------|
+| Full Network | 1500|73563|
+| Line | 400|666281|
+| Random 2D Grid | 3000|99172|
+| 3D Torus Grid | 1500|86391|
+| Honeycomb | 1500|311297|
+| Random Honeycomb | 150000|237671|
