@@ -25,7 +25,7 @@ We handled the following network topologies and tested the convergence time for 
 
 1. Full Network
 2. Line
-3. Random 3D Grid
+3. Random 2D Grid
 4. 3D Torus Grid
 5. Honeycomb
 6. Random Honeycomb

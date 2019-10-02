@@ -24,3 +24,6 @@ app-*.tar
 
 #Ignore elixir build dir
 /.elixir_ls
+
+#Ignore elixir executable
+app
