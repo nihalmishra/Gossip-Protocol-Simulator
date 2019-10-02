@@ -11,7 +11,7 @@ Nihal Mishra UFID: 3075-9823
 1. Open Terminal
 2. cd mishra_prasad/app
 3. Generate executable with `mix escript.build`
-4. Run with `escript ./app numNodes topology algorithm`
+4. Run with `escript ./app numNodes topology algorithm` where topology is one of `full/line/rand2D/3Dtorus/honeycomb/randhoneycomb `and algorithm is one of `gossip/push-sum`
 
 ## **Gossip Protocol**
 
