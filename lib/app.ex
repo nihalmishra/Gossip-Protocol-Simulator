@@ -2,7 +2,7 @@ defmodule App do
   use GenServer
 
   def temp()do
-    main(["1000", "honeycomb", "gossip"])
+    main(["36", "honeycomb", "gossip"])
   end
 
   def main(args) do

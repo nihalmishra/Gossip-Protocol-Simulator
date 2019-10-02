@@ -20,7 +20,6 @@ defmodule PushSumPeer do
 
     if(no_change_counter == 3) do
       count = :ets.update_counter(:datastore, "count", {2,1})
-      IO.puts("no change 3 times")
       total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
 
       # print for every x nodes that received msg

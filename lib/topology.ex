@@ -66,31 +66,46 @@ defmodule Topology do
     side6 = if i + cubeLength * cubeLength > total_nodes, do: total_nodes + i + cubeLength * cubeLength, else: i + cubeLength * cubeLength
 
     [
-      side1,
-      side2,
-      side3,
-      side4,
-      side5,
-      side6
+      side1,side2,side3,side4,side5,side6
     ]
   end
 
-  defp get_honeycomb_neighbors(curr_index, total_nodes) do
+  def get_honeycomb_neighbors(curr_index, total_nodes) do
       width = total_nodes |> :math.pow(1 / 2) |> :math.ceil() |> trunc()
-      row = div(curr_index, width)
+      row = div(curr_index-1, width)
       neighbors1 =
-        cond do
-          rem(row, 2) == 0 && rem(curr_index,2)==0 -> curr_index + 1
-          rem(row, 2) == 0 && rem(curr_index,2)==1 -> curr_index - 1
-          rem(row, 2) == 1 && rem(curr_index,2)==0 -> curr_index - 1
-          rem(row, 2) == 1 && rem(curr_index,2)==1 -> curr_index + 1
+        if(rem(width, 2)==0) do #grid even width
+          if(rem(row, 2) == 0) do #even row
+            cond do
+              rem(curr_index,width)==1 || rem(curr_index,width)==0 -> -1
+              rem(curr_index,2)==0 -> curr_index + 1
+              rem(curr_index,2)==1 -> curr_index - 1
+            end
+          else
+            cond do
+              rem(curr_index,2)==0 -> curr_index - 1
+              rem(curr_index,2)==1 -> curr_index + 1
+            end
+          end
+        else #grid odd width
+          if(rem(row, 2) == 0) do
+            cond do
+              rem(curr_index,width)==1 -> -1
+              rem(curr_index,2)==0 -> curr_index + 1
+              rem(curr_index,2)==1 -> curr_index - 1
+            end
+          else
+            cond do
+              rem(curr_index,width)==0 -> -1
+              rem(curr_index,2)==0 -> curr_index + 1
+              rem(curr_index,2)==1 -> curr_index - 1
+            end
+          end
         end
       neighbors2 = curr_index + width
       neighbors3 = curr_index - width
       [
-        neighbors1,
-        neighbors2,
-        neighbors3
+        neighbors1,neighbors2,neighbors3
       ]
       |> Enum.filter(fn x -> x > 0 && x <= total_nodes end) |> Enum.map(fn x-> trunc(x) end)
   end
