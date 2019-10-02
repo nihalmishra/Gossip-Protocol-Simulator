@@ -5,12 +5,11 @@ defmodule PushSumPeer do
     {:ok, state}
   end
 
-  def handle_cast({:receive, s,w}, state) do
-    # IO.puts("receive starting #{state.name}")
-    s = s + state.s
-    w = w + state.w
+  def handle_cast({:receive, s_received,w_received}, state) do
+    s_new = state.s + s_received
+    w_new = state.w + w_received
 
-    change = abs(s/w - state.s/state.w)
+    change = abs(s_new/w_new - state.s/state.w)
 
     no_change_counter =
       if(change  < :math.pow(10,-10)) do
@@ -22,36 +21,37 @@ defmodule PushSumPeer do
     if(no_change_counter == 3) do
       count = :ets.update_counter(:datastore, "count", {2,1})
       IO.puts("no change 3 times")
-      if(rem(count,10)==0) do
-        IO.puts("Actors terminated = #{count}")
-      end
       total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
+
+      # print for every x nodes that received msg
+      if(rem(count,trunc(total_nodes/10))==0) do
+        IO.puts("Peers unchanged 3 times = #{count}")
+      end
+
       if count == total_nodes do
         start_time = elem(Enum.at(:ets.lookup(:datastore, "start_time"),0),1)
         endTime = System.monotonic_time(:millisecond) - start_time
         IO.puts "Convergence time = " <> Integer.to_string(endTime) <>" Milliseconds"
         System.halt(1)
       end
-      exit(:normal)
+      # exit(:normal)
     end
 
-    pushsum_send(state,s,w)
+    pushsum_send(state,s_new,w_new)
 
-    updated_state = Map.put(state,:s, s/2)
-    updated_state = Map.put(state,:w, w/2)
-    updated_state = Map.put(state,:no_change_counter, no_change_counter)
+    updated_state = Map.put(state,:s, s_new/2)
+    updated_state = Map.put(updated_state,:w, w_new/2)
+    updated_state = Map.put(updated_state,:no_change_counter, no_change_counter)
+
     {:noreply, updated_state}
   end
 
   @spec pushsum_send(atom | %{name: any, topology: <<_::32, _::_*8>>}, number, number) :: :ok
-  def pushsum_send(state,s,w) do
+  def pushsum_send(state,s_new,w_new) do
     curr_index = state.name
-    # IO.puts "inside gossip #{curr_index} has seen #{msg_seen} messages"
     neighbors = Topology.getNeighbor(state.topology, curr_index)
-
     target = Integer.to_string(find_random_neighbor(neighbors))
-    # IO.puts("#{curr_index} sending to #{target}")
-    GenServer.cast(via_tuple(target), {:receive, s/2, w/2})
+    GenServer.cast(via_tuple(target), {:receive, s_new/2, w_new/2})
   end
 
   def find_random_neighbor(neighbors) do
