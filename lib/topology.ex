@@ -58,13 +58,12 @@ defmodule Topology do
   defp get_3Dtorus_neighbors(i, total_nodes) do
     cubeLength = total_nodes |> :math.pow(1 / 3) |> :math.ceil() |> trunc()
 
-    side1 = if i - 1 <= 0, do: total_nodes + i - 1, else: i - 1
-    side2 = if i + 1 > total_nodes, do: i + 1 - total_nodes, else: i + 1
-    side3 = if i - cubeLength <= 0, do: total_nodes + i - cubeLength, else: i - cubeLength
-    side4 = if i + cubeLength > total_nodes, do: total_nodes + i - cubeLength, else: i + cubeLength
-    side5 = if i - cubeLength * cubeLength <= 0, do: total_nodes + i - cubeLength * cubeLength, else: i - cubeLength * cubeLength
-    side6 = if i + cubeLength * cubeLength > total_nodes, do: total_nodes + i + cubeLength * cubeLength, else: i + cubeLength * cubeLength
-
+    side1 = if i - cubeLength <= 0, do: i + cubeLength * cubeLength - cubeLength , else: i - 1
+    side2 = if i + cubeLength > total_nodes, do: i - cubeLength * cubeLength + cubeLength, else: i + 1
+    side3 = if rem(i,cubeLength) == 0, do: i - cubeLength + 1, else: i + 1
+    side4 = if rem(i,cubeLength) == 1, do: i + cubeLength - 1, else: i - 1
+    side5 = if div(i - 1, cubeLength * cubeLength) == 0, do: i + total_nodes - cubeLength * cubeLength, else: i - cubeLength * cubeLength
+    side6 = if div(i - 1, cubeLength * cubeLength) == (cubeLength - 1), do: i - total_nodes + cubeLength * cubeLength, else: i + cubeLength * cubeLength
     [
       side1,side2,side3,side4,side5,side6
     ]
