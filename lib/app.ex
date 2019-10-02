@@ -2,7 +2,7 @@ defmodule App do
   use GenServer
 
   def temp()do
-    main(["100", "line", "gossip"])
+    main(["100", "line", "push-sum"])
   end
 
   def main(args) do
@@ -41,7 +41,7 @@ defmodule App do
 
   def create_pushsum_peers(peer_list, topology_name) do
     Enum.each peer_list, fn peer ->
-      {:ok, pid} = GenServer.start_link(PushSumPeer, %{no_change_counter: 0, name: peer, topology: topology_name, s: peer, w: 1},
+      {:ok, pid} = GenServer.start_link(PushSumPeer, %{no_change_counter: 0, name: peer, topology: topology_name, s: peer/1, w: 1.0},
       name: via_tuple(Integer.to_string(peer)))
     end
   end
@@ -54,7 +54,7 @@ defmodule App do
 
   def initiate_pushsum_msg(peer_list) do
     random_node = Enum.random(peer_list)
-    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
+    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,0,0})
     # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,random_node,1})
   end
 
