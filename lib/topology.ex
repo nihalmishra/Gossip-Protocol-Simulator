@@ -1,7 +1,6 @@
 defmodule Topology do
-  def getNeighbor(topology, curr_index, total_nodes) do
-    # numNodes = correctNumNodesForGrids(total_nodes, topology)
-    # range = 1..numNodes
+  def getNeighbor(topology, curr_index) do
+    total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
     # random2dGrid = Enum.shuffle(range) |> Enum.with_index(1)
     neighbors =
       case topology do
@@ -58,8 +57,7 @@ defmodule Topology do
   # end
 
   defp get_3Dtorus_neighbors(i, total_nodes) do
-    cubeLength = total_nodes |> :math.pow(1 / 3)
-    total_nodes = :math.pow(cubeLength, 3)
+    cubeLength = total_nodes |> :math.pow(1 / 3) |> :math.ceil() |> trunc()
 
     side1 = if i - 1 <= 0, do: total_nodes + i - 1, else: i - 1
     side2 = if i + 1 > total_nodes, do: i + 1 - total_nodes, else: i + 1
@@ -79,14 +77,14 @@ defmodule Topology do
   end
 
   defp get_honeycomb_neighbors(curr_index, total_nodes) do
-      width = :math.sqrt(total_nodes) |> :math.ceil() |> :math.pow(2) |> trunc()
+      width = total_nodes |> :math.pow(1 / 2) |> :math.ceil() |> trunc()
       row = div(curr_index, width)
       neighbors1 =
         cond do
           rem(row, 2) == 0 && rem(curr_index,2)==0 -> curr_index + 1
           rem(row, 2) == 0 && rem(curr_index,2)==1 -> curr_index - 1
           rem(row, 2) == 1 && rem(curr_index,2)==0 -> curr_index - 1
-          rem(row, 2) == 1 && rem(curr_index,2)==0 -> curr_index + 1
+          rem(row, 2) == 1 && rem(curr_index,2)==1 -> curr_index + 1
         end
       neighbors2 = curr_index + width
       neighbors3 = curr_index - width
@@ -100,14 +98,6 @@ defmodule Topology do
 
   defp get_randhoneycomb_neighbors(curr_index, total_nodes) do
     [Enum.random(1..total_nodes) | get_honeycomb_neighbors(curr_index, total_nodes)]
-  end
-
-  def correctNumNodesForGrids(numNodes, topology) do
-    case topology do
-      "3Dtorus" -> :math.pow(numNodes, 1 / 3) |> :math.ceil() |> :math.pow(3) |> trunc()
-      "rand2D" -> :math.sqrt(numNodes) |> :math.ceil() |> :math.pow(2) |> trunc()
-      _ -> numNodes
-    end
   end
 
   def get_distance(x1, y1, x2, y2) do
