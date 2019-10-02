@@ -14,12 +14,12 @@ defmodule GossipPeer do
       spawn_link(__MODULE__,:gossip_cycle,[state])
 
       count = :ets.update_counter(:datastore, "count", {2,1})
-
+      total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
       # print for every x nodes that received msg
-      if(rem(count,100)==0) do
+      if(rem(count,trunc(total_nodes/10))==0) do
         IO.puts("Nodes seen message = #{count}")
       end
-      total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
+
       if count == total_nodes do
         start_time = elem(Enum.at(:ets.lookup(:datastore, "start_time"),0),1)
         endTime = System.monotonic_time(:millisecond) - start_time
