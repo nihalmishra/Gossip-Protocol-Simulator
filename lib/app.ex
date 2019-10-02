@@ -2,7 +2,7 @@ defmodule App do
   use GenServer
 
   def temp()do
-    main(["100", "full", "gossip"])
+    main(["1000", "full", "gossip"])
   end
 
   def main(args) do
@@ -21,8 +21,13 @@ defmodule App do
       "push-sum" -> create_pushsum_peers(peer_list, topology)
                     initiate_pushsum_msg(peer_list)
     end
+    infiniteloop()
   end
 
+  def infiniteloop() do
+    :timer.sleep(100)
+    infiniteloop()
+  end
   def init(state) do
     {:ok, state}
   end
@@ -43,14 +48,14 @@ defmodule App do
 
   def initiate_gossip_msg(peer_list) do
     random_node = Enum.random(peer_list)
-    # GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
-    GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,:ok})
+    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
+    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,:ok})
   end
 
   def initiate_pushsum_msg(peer_list) do
     random_node = Enum.random(peer_list)
-    # GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
-    GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,random_node,1})
+    GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
+    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,random_node,1})
   end
 
   defp initialize_ets(peer_count) do
