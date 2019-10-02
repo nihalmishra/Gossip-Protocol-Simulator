@@ -1,14 +1,13 @@
 defmodule Topology do
   def getNeighbor(topology, curr_index) do
     total_nodes = elem(Enum.at(:ets.lookup(:datastore, "total_nodes"),0),1)
-    # random2dGrid = Enum.shuffle(range) |> Enum.with_index(1)
     neighbors =
       case topology do
         "full" -> get_full_neighbors(total_nodes)
 
         "line" -> get_line_neighbors(curr_index, total_nodes)
 
-        # "rand2D" -> get_rand2D_neighbors(curr_index, total_nodes, random2dGrid)
+        "rand2D" -> get_rand2D_neighbors(curr_index, total_nodes)
 
         "3Dtorus" -> get_3Dtorus_neighbors(curr_index, total_nodes)
 
@@ -16,8 +15,6 @@ defmodule Topology do
 
         "randhoneycomb" -> get_randhoneycomb_neighbors(curr_index, total_nodes)
       end
-      # IO.puts "#{curr_index}->"
-      # IO.inspect neighbors
       neighbors
   end
 
@@ -33,28 +30,30 @@ defmodule Topology do
     end
   end
 
-  # def get_rand2D_neighbors(curr_index, total_nodes) do
-  #   gridLen = total_nodes |> :math.sqrt() |> trunc()
-  #   k = (gridLen / 10) |> :math.ceil() |> trunc()
+  def get_rand2D_neighbors(curr_index, total_nodes) do
+    random_2d_grid = elem(Enum.at(:ets.lookup(:datastore, "random2dGrid"),0),1)
 
-  #   top = Enum.map(1..k, fn x -> curr_index - x * gridLen end) |> Enum.filter(fn x -> x > 0 end)
-  #   bottom = Enum.map(1..k, fn x -> curr_index + x * gridLen end) |> Enum.filter(fn x -> x <= total_nodes end)
+    gridLen = total_nodes |> :math.sqrt() |> trunc()
+    k = (gridLen / 10) |> :math.ceil() |> trunc()
 
-  #   right =
-  #     if rem(curr_index, gridLen) == 0,
-  #       do: [],
-  #       else: Enum.take_while((curr_index + 1)..(curr_index + k), fn x -> rem(x, gridLen) != 1 end)
+    top = Enum.map(1..k, fn x -> curr_index - x * gridLen end) |> Enum.filter(fn x -> x > 0 end)
+    bottom = Enum.map(1..k, fn x -> curr_index + x * gridLen end) |> Enum.filter(fn x -> x <= total_nodes end)
 
-  #   left =
-  #     if rem(curr_index, gridLen) == 1,
-  #       do: [],
-  #       else: Enum.take_while((curr_index - 1)..(curr_index - k), fn x -> rem(x, gridLen) != 0 end)
+    right =
+      if rem(curr_index, gridLen) == 0,
+        do: [],
+        else: Enum.take_while((curr_index + 1)..(curr_index + k), fn x -> rem(x, gridLen) != 1 end)
 
-  #   neighborIndex = top ++ bottom ++ right ++ left |> Enum.map(fn x -> trunc(x) end)
+    left =
+      if rem(curr_index, gridLen) == 1,
+        do: [],
+        else: Enum.take_while((curr_index - 1)..(curr_index - k), fn x -> rem(x, gridLen) != 0 end)
 
-  #   Enum.filter(random2dGrid, fn x -> Enum.member?(neighborIndex, elem(x, 1)) end)
-  #   |> Enum.map(fn x -> elem(x, 0) end)
-  # end
+    neighborIndex = top ++ bottom ++ right ++ left |> Enum.map(fn x -> trunc(x) end)
+
+    neighbors = Enum.filter(random_2d_grid, fn x -> Enum.member?(neighborIndex, elem(x, 1)) end)
+    |> Enum.map(fn x -> elem(x, 0) end)
+  end
 
   defp get_3Dtorus_neighbors(i, total_nodes) do
     cubeLength = total_nodes |> :math.pow(1 / 3) |> :math.ceil() |> trunc()

@@ -2,7 +2,7 @@ defmodule App do
   use GenServer
 
   def temp()do
-    main(["100", "line", "push-sum"])
+    main(["1000", "honeycomb", "gossip"])
   end
 
   def main(args) do
@@ -15,13 +15,17 @@ defmodule App do
 
     initialize_ets(length(peer_list))
 
+    if(topology=="rand2D") do
+      create_random_grid(total_nodes)
+    end
+
     case algorithm do
       "gossip" -> create_gossip_peers(peer_list, topology)
                   initiate_gossip_msg(peer_list)
       "push-sum" -> create_pushsum_peers(peer_list, topology)
                     initiate_pushsum_msg(peer_list)
     end
-    infiniteloop()
+    infiniteloop() #not needed if running from iex
   end
 
   def infiniteloop() do
@@ -73,6 +77,11 @@ defmodule App do
       "3Dtorus" -> total_nodes |> :math.pow(1 / 3) |> :math.ceil() |>:math.pow(3) |> trunc()
       _ -> total_nodes |> :math.pow(1 / 2) |> :math.ceil() |>:math.pow(2) |> trunc()
     end
+  end
+
+  def create_random_grid(total_nodes) do
+    random2dGrid = Enum.shuffle(1..total_nodes) |> Enum.with_index(1)
+    :ets.insert(:datastore, {"random2dGrid",random2dGrid})
   end
 
   defp via_tuple(peer_name) do
