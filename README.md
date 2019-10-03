@@ -2,9 +2,9 @@
 
 ## **Group Member Names -**
 
-Saurabh Kumar Prasad UFID: 3417-8993
+Saurabh Kumar Prasad
 
-Nihal Mishra UFID: 3075-9823
+Nihal Mishra
 
 ## **Steps to run code on Windows OS**
 
