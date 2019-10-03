@@ -1,10 +1,6 @@
 defmodule App do
   use GenServer
 
-  def temp()do
-    main(["1331", "3Dtorus", "gossip"])
-  end
-
   def main(args) do
     [numNodes, topology, algorithm] = args
     Registry.start_link(keys: :unique, name: :my_reg)
@@ -53,13 +49,11 @@ defmodule App do
   def initiate_gossip_msg(peer_list) do
     random_node = Enum.random(peer_list)
     GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,:ok})
-    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,:ok})
   end
 
   def initiate_pushsum_msg(peer_list) do
     random_node = Enum.random(peer_list)
     GenServer.cast(via_tuple(Integer.to_string(random_node)),{:receive,0,0})
-    # GenServer.cast(via_tuple(Integer.to_string(Enum.at(peer_list,50))),{:receive,random_node,1})
   end
 
   defp initialize_ets(peer_count) do

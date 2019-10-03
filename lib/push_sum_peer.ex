@@ -24,12 +24,13 @@ defmodule PushSumPeer do
 
       # print for every x nodes that received msg
       if(rem(count,trunc(total_nodes/10))==0) do
-        IO.puts("Peers unchanged 3 times = #{count}")
+        IO.puts("Peer count that remained unchanged 3 times = #{count}")
       end
 
       if count == total_nodes do
         start_time = elem(Enum.at(:ets.lookup(:datastore, "start_time"),0),1)
         endTime = System.monotonic_time(:millisecond) - start_time
+        IO.puts("s value #{state.s}, w value #{state.w} at convergence for total nodes: #{total_nodes}")
         IO.puts "Convergence time = " <> Integer.to_string(endTime) <>" Milliseconds"
         System.halt(1)
       end
@@ -54,19 +55,11 @@ defmodule PushSumPeer do
   end
 
   def find_random_neighbor(neighbors) do
-    # if Enum.empty?(neighbors) do
-    #   Process.exit(self(),:normal)
-    # end
+    if Enum.empty?(neighbors) do
+      Process.exit(self(),:normal)
+    end
     next = Enum.random(neighbors)
   end
-
-  # def handle_cast({:update_neighbours,current_neighbours},state) do
-  #   new_state = Map.put(state,:neighbours,current_neighbours)
-  #   if Enum.empty?(state.neighbours) do
-  #     Process.exit(self(),:normal)
-  #   end
-  #   {:noreply,new_state}
-  # end
 
   defp via_tuple(peer_name) do
     {:via, Registry, {:my_reg, peer_name}}
